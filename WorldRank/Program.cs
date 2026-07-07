@@ -46,9 +46,9 @@ void AddPlayer()
     }
 
     Console.Write("Score: ");
-    if (!int.TryParse(Console.ReadLine(), out var score))
+    if (!int.TryParse(Console.ReadLine(), out var score) || score < 0)
     {
-        Console.WriteLine("Score must be a whole number.");
+        Console.WriteLine("Score must be a non-negative whole number.");
         return;
     }
 

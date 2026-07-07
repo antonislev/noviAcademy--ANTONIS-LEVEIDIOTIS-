@@ -3,7 +3,7 @@
 public class Wallet
 {
 	public int PlayerId { get; }
-	public Currency Currency { get; set; }
+	public Currency Currency { get; }
 	public decimal	Balance { get; private set; }
 	public	bool IsBlocked { get; private set; }
 
