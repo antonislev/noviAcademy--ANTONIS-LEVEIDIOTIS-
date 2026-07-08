@@ -11,7 +11,7 @@ public class Player : IPlayer
     public int Score { get; private set; }
 
     private readonly Dictionary<Currency, Wallet> _wallets = new();
-    public Dictionary<Currency, Wallet> Wallets { get; } = new();
+    public IReadOnlyDictionary<Currency, Wallet> Wallets => _wallets;
 
 
     public Player(string name)

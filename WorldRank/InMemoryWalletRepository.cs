@@ -1,4 +1,5 @@
-﻿using WorldRank.@int;
+﻿using Microsoft.Extensions.Logging;
+using WorldRank.@int;
 using WorldRank.main;
 
 namespace WorldRank;
@@ -6,10 +7,11 @@ namespace WorldRank;
 public class InMemoryWalletRepository : IWalletRepository
 {
     private readonly IPlayerRepository _playerRepo;
-
-    public InMemoryWalletRepository(IPlayerRepository playerRepo)
+    private readonly ILogger<InMemoryWalletRepository> _logger;
+    public InMemoryWalletRepository(IPlayerRepository playerRepo, ILogger<InMemoryWalletRepository> logger)
     {
         _playerRepo = playerRepo;
+        _logger = logger;
     }
 
     public void Add(Wallet wallet, int playerId)

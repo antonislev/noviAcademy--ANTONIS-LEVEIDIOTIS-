@@ -1,9 +1,19 @@
 ﻿using WorldRank;
 using WorldRank.main;
 using WorldRank.@int;
+using NLog.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
+using var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.ClearProviders();
+    builder.SetMinimumLevel(LogLevel.Trace);
+    builder.AddNLog("nlog.config");
+});
+
+var walletLogger = loggerFactory.CreateLogger<InMemoryWalletRepository>();
 var playerRepo = new InMemoryPlayerRepository();
-var walletRepo = new InMemoryWalletRepository(playerRepo);
+var walletRepo = new InMemoryWalletRepository(playerRepo, walletLogger);
 
 while (true)
 {

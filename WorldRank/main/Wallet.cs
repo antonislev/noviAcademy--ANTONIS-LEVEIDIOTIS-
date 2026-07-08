@@ -1,4 +1,5 @@
-﻿namespace WorldRank.main;
+﻿using WorldRank.exe;
+namespace WorldRank.main;
 
 public class Wallet
 {
@@ -30,12 +31,18 @@ public class Wallet
         if (amount <= 0)
             throw new ArgumentOutOfRangeException(nameof(amount), "Withdrawal amount must be positive.");
         if (amount > Balance)
-            throw new InvalidOperationException("Insufficient balance.");
+            throw new InsufficientFundsException("Insufficient balance.");
         Balance -= amount;
     }
 
     public void Block() => IsBlocked = true;
     public void Unblock() => IsBlocked = false;
+    public void SetBalance(decimal newBalance)
+    {
+        if (newBalance < 0)
+            throw new ArgumentOutOfRangeException(nameof(newBalance), "Balance cannot be negative.");
+        Balance = newBalance;
+    }
 
     public override string ToString() =>
         $"Wallet for Player ID: {PlayerId}, Currency: {Currency}, Balance: {Balance}, IsBlocked: {IsBlocked}";
