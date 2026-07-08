@@ -3,6 +3,7 @@ using WorldRank.main;
 using WorldRank.@int;
 using NLog.Extensions.Logging;
 using Microsoft.Extensions.Logging;
+using WorldRank.exe;
 
 using var loggerFactory = LoggerFactory.Create(builder =>
 {
@@ -10,9 +11,11 @@ using var loggerFactory = LoggerFactory.Create(builder =>
     builder.SetMinimumLevel(LogLevel.Trace);
     builder.AddNLog("nlog.config");
 });
+var walletRepoLogger = loggerFactory.CreateLogger<InMemoryWalletRepository>();
+var playerRepoLogger = loggerFactory.CreateLogger<InMemoryPlayerRepository>();
 
 var walletLogger = loggerFactory.CreateLogger<InMemoryWalletRepository>();
-var playerRepo = new InMemoryPlayerRepository();
+var playerRepo = new InMemoryPlayerRepository(playerRepoLogger);
 var walletRepo = new InMemoryWalletRepository(playerRepo, walletLogger);
 
 var testLogger = loggerFactory.CreateLogger<Program>();
@@ -30,6 +33,8 @@ while (true)
     Console.WriteLine("5. Add wallet to player");
     Console.WriteLine("6. List player's wallets");
     Console.WriteLine("7. Group players by score");
+    Console.WriteLine("8. Deposit into wallet");
+    Console.WriteLine("9. Withdraw from wallet");
     Console.WriteLine("0. Exit");
     Console.Write("> ");
 
@@ -42,6 +47,8 @@ while (true)
         "5" => AddWallet,
         "6" => ListWallets,
         "7" => GroupByScore,
+        "8" => Deposit,
+        "9" => Withdraw,
         "0" => null,
         _ => () => Console.WriteLine("Unknown option.")
     };
@@ -145,13 +152,24 @@ void AddWallet()
 
     try
     {
-        walletRepo.Add(new Wallet(id, currency), id);
+        var wallerLogger = loggerFactory.CreateLogger<Wallet>();
+        walletRepo.Add(new Wallet(id, currency, wallerLogger), id);
         Console.WriteLine("Wallet added.");
     }
-    catch (InvalidOperationException ex)
+    catch (Playernotfound ex)
     {
         Console.WriteLine(ex.Message);
     }
+    catch (Duplicatewalletexception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error adding wallet: {ex.Message}");
+    }
+
 }
 
 void ListWallets()
@@ -188,5 +206,85 @@ void GroupByScore()
         Console.WriteLine($"Score {group.Key}:");
         foreach (var p in group)
             Console.WriteLine($"  {p}");
+    }
+}
+
+Wallet? PromptForWallet()
+    {
+        Console.Write("Player ID: ");
+        if (!int.TryParse(Console.ReadLine(), out var id))
+        {
+            Console.WriteLine("Invalid ID.");
+            return null;
+        }
+
+        Console.Write("Currency: ");
+        if (!Enum.TryParse<Currency>(Console.ReadLine(), true, out var currency))
+        {
+            Console.WriteLine("Unknown currency.");
+            return null;
+        }
+
+        var wallets = walletRepo.GetByPlayer(id).ToList();
+        var wallet = wallets.FirstOrDefault(w => w.Currency == currency);
+        if (wallet is null)
+            Console.WriteLine("No matching wallet found for that player/currency.");
+
+        return wallet;
+    }
+void Deposit()
+    {
+        var wallet = PromptForWallet();
+        if (wallet is null) return;
+
+        Console.Write("Amount: ");
+        if (!decimal.TryParse(Console.ReadLine(), out var amount))
+        {
+            Console.WriteLine("Invalid amount.");
+            return;
+        }
+
+        try
+        {
+            wallet.Deposit(amount);
+            Console.WriteLine($"Deposit successful. New balance: {wallet.Balance}");
+        }
+        catch (Walletblockedexception ex)
+        {
+            Console.WriteLine($"Deposit failed: {ex.Message}");
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            Console.WriteLine($"Deposit failed: {ex.Message}");
+        }
+    }
+void Withdraw()
+{
+    var wallet = PromptForWallet();
+    if (wallet is null) return;
+
+    Console.Write("Amount: ");
+    if (!decimal.TryParse(Console.ReadLine(), out var amount))
+    {
+        Console.WriteLine("Invalid amount.");
+        return;
+    }
+
+    try
+    {
+        wallet.Withdraw(amount);
+        Console.WriteLine($"Withdrawal successful. New balance: {wallet.Balance}");
+    }
+    catch (InsufficientFundsException ex)
+    {
+        Console.WriteLine($"Withdrawal failed: {ex.Message}");
+    }
+    catch (Walletblockedexception ex)
+    {
+        Console.WriteLine($"Withdrawal failed: {ex.Message}");
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Console.WriteLine($"Withdrawal failed: {ex.Message}");
     }
 }
