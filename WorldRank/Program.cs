@@ -15,6 +15,11 @@ var walletLogger = loggerFactory.CreateLogger<InMemoryWalletRepository>();
 var playerRepo = new InMemoryPlayerRepository();
 var walletRepo = new InMemoryWalletRepository(playerRepo, walletLogger);
 
+var testLogger = loggerFactory.CreateLogger<Program>();
+testLogger.LogInformation("Test info log — logging pipeline is working.");
+testLogger.LogWarning("Test warning log.");
+testLogger.LogError("Test error log.");
+
 while (true)
 {
     Console.WriteLine("\n=== WorldRank Player Registry ===");
