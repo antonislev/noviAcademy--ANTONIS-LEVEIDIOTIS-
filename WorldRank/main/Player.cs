@@ -1,5 +1,6 @@
 ﻿namespace WorldRank.main;
 
+using WorldRank.exe;
 using WorldRank.@int;
 public class Player : IPlayer
 {
@@ -11,7 +12,7 @@ public class Player : IPlayer
     public int Score { get; private set; }
 
     private readonly Dictionary<Currency, Wallet> _wallets = new();
-    public Dictionary<Currency, Wallet> Wallets { get; } = new();
+    public IReadOnlyDictionary<Currency, Wallet> Wallets => _wallets;
 
 
     public Player(string name)
@@ -36,7 +37,7 @@ public class Player : IPlayer
         if (wallet.PlayerId != Id)
             throw new InvalidOperationException("Wallet does not belong to this player.");
         if (_wallets.ContainsKey(wallet.Currency))
-            throw new InvalidOperationException($"Player {Id} already has a {wallet.Currency} wallet.");
+            throw new Duplicatewalletexception($"Player {Id} already has a {wallet.Currency} wallet.");
         _wallets[wallet.Currency] = wallet;
     }
     public override string ToString() =>

@@ -1,15 +1,33 @@
 ﻿using WorldRank.main;
 using WorldRank.@int;
+using Microsoft.Extensions.Logging;
 namespace WorldRank;
 
 public class InMemoryPlayerRepository : IPlayerRepository
 {
     private readonly List<Player> _players = new();
+    private readonly ILogger<InMemoryPlayerRepository> _logger;
 
-    public void AddPlayer(Player p) => _players.Add(p);
+    public InMemoryPlayerRepository(ILogger<InMemoryPlayerRepository> logger)
+    {
+        _logger = logger;
+    }
 
-    public Player? FindPlayer(int playerId) => _players.FirstOrDefault(p => p.Id == playerId);
+    public void AddPlayer(Player p)
+    {
+        _players.Add(p);
+        _logger.LogInformation("Player added: {PlayerName} with ID {PlayerId}", p.Name, p.Id);
+    }
 
+    public Player? FindPlayer(int playerId)
+    {
+        var player = _players.FirstOrDefault(p => p.Id == playerId);
+        if (player is null)
+        {
+            _logger.LogWarning("Player with ID {PlayerId} not found.", playerId);
+        }
+        return player;
+    }
     public Player? FindByName(string name) => _players.FirstOrDefault(p =>
             p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
@@ -17,7 +35,11 @@ public class InMemoryPlayerRepository : IPlayerRepository
     {
         var player = FindPlayer(playerId);
         if (player is not null)
+        {
             _players.Remove(player);
+            _logger.LogInformation("Player deleted: {PlayerName} with ID {PlayerId}", player.Name, player.Id);
+        }
+            
     }
 
     public IEnumerable<Player> GetAll() => _players;
