@@ -1,4 +1,7 @@
-﻿namespace WorldRank;
+﻿using WorldRank.@int;
+using WorldRank.main;
+
+namespace WorldRank;
 
 public class InMemoryWalletRepository : IWalletRepository
 {
@@ -14,12 +17,9 @@ public class InMemoryWalletRepository : IWalletRepository
         var player = _playerRepo.FindPlayer(playerId);
         if (player is null)
             throw new InvalidOperationException($"Player {playerId} not found.");
+        
 
-        if (player.Wallets.ContainsKey(wallet.Currency))
-            throw new InvalidOperationException(
-                $"Player {playerId} already has a {wallet.Currency} wallet.");
-
-        player.Wallets[wallet.Currency] = wallet;
+        player.AddWallet(wallet);
     }
 
     public IEnumerable<Wallet> GetByPlayer(int playerId)

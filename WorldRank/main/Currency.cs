@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-namespace WorldRank;
+namespace WorldRank.main;
 public enum Currency
 {
-    Gold,
-    Silver,
-    Bronze,
-    Gems
+    EUR,
+    JPN,
+    USD,
+    RUP
 }

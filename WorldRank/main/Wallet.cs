@@ -1,4 +1,4 @@
-﻿namespace WorldRank;
+﻿namespace WorldRank.main;
 
 public class Wallet
 {

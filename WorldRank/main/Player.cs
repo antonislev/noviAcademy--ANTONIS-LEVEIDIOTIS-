@@ -1,14 +1,18 @@
-﻿namespace WorldRank;
+﻿namespace WorldRank.main;
 
+using WorldRank.@int;
 public class Player : IPlayer
 {
-
+   
+   
     private static int _nextId = 1;
     public int Id { get; }
     public string Name { get; }
     public int Score { get; private set; }
 
-    public Dictionary<Currency ,Wallet > Wallets { get; } = new ();
+    private readonly Dictionary<Currency, Wallet> _wallets = new();
+    public Dictionary<Currency, Wallet> Wallets { get; } = new();
+
 
     public Player(string name)
     {
@@ -26,7 +30,15 @@ public class Player : IPlayer
 
         Score = newScore;
     }
-
+    
+    internal void AddWallet(Wallet wallet)
+    {
+        if (wallet.PlayerId != Id)
+            throw new InvalidOperationException("Wallet does not belong to this player.");
+        if (_wallets.ContainsKey(wallet.Currency))
+            throw new InvalidOperationException($"Player {Id} already has a {wallet.Currency} wallet.");
+        _wallets[wallet.Currency] = wallet;
+    }
     public override string ToString() =>
             $"[{Id}] {Name} - Score: {Score}";
 }

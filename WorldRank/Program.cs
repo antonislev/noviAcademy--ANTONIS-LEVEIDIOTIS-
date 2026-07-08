@@ -1,4 +1,6 @@
 ﻿using WorldRank;
+using WorldRank.main;
+using WorldRank.@int;
 
 var playerRepo = new InMemoryPlayerRepository();
 var walletRepo = new InMemoryWalletRepository(playerRepo);

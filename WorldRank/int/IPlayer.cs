@@ -1,4 +1,4 @@
-﻿namespace WorldRank
+﻿namespace WorldRank.@int
 {
 	public interface IPlayer
 	{

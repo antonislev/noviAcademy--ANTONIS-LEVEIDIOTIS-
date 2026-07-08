@@ -1,4 +1,6 @@
-﻿namespace WorldRank;
+﻿using WorldRank.main;
+using WorldRank.@int;
+namespace WorldRank;
 
 public class InMemoryPlayerRepository : IPlayerRepository
 {
