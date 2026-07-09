@@ -1,6 +1,7 @@
 using NLog;
-using WorldRank.Console.Enums;
-using WorldRank.Console.Exceptions;
+using WorldRank.Domain.Exceptions;
+using WorldRank.Domain.Entities;
+using WorldRank.Domain.Enums;
 
 namespace WorldRank.Console
 {
