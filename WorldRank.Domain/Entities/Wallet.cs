@@ -60,5 +60,24 @@ namespace WorldRank.Domain.Entities
 		}
 
 		public override string ToString() => $"Balance -> {Balance} Currency -> {Currency} IsBlocked -> {IsBlocked}";
-	}
+
+        public void AddFunds(decimal amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SubstractFunds(decimal amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ForceSubstractFunds(decimal amount)
+        {
+            throw new NotImplementedException();
+        }
+        public void ForceDeposit(decimal amount)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
