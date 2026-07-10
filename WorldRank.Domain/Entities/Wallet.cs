@@ -1,83 +1,78 @@
-using WorldRank.Domain.Enums;
 using WorldRank.Domain.Exceptions;
 
 namespace WorldRank.Domain.Entities
 {
-	public class Wallet : IWallet
-	{
-		public Currency Currency { get; }
-		public int PlayerId { get; }
-		public decimal Balance { get; private set; }
-		public bool IsBlocked { get; private set; }
+    public class Wallet : IWallet
+    {
+        public Currency.Currency Currency { get; }
+        public int PlayerId { get; }
+        public decimal Balance { get; private set; }
+        public bool IsBlocked { get; private set; }
 
-		public Wallet(int playerId, Currency currency, decimal balance, bool isBlocked = false)
-		{
-			PlayerId = playerId;
-			if (balance < 0)
-				throw new InsufficientFundsException(balance);
-
-			Balance = balance;
-			Currency = currency;
-			IsBlocked = isBlocked;
-		}
-
-		public void Block() => IsBlocked = true;
-
-		public void Unblock() => IsBlocked = false;
-
-		public void SetBalance(decimal balance)
-		{
-			if (balance < 0)
-				throw new InsufficientFundsException(balance);
-
-			Balance = balance;
-		}
-
-		public void Deposit(decimal amount)
-		{
-			if (amount <= 0)
-				throw new InvalidAmountException(amount);
-
-			if (IsBlocked)
-				throw new WalletBlockedException(Currency);
-
-			Balance += amount;
-		}
-
-		public void Withdraw(decimal amount)
-		{
-			if (amount <= 0)
-				throw new InvalidAmountException(amount);
-
-			if (IsBlocked)
-				throw new WalletBlockedException(Currency);
-
-			var newBalance = Balance - amount;
-			if (newBalance < 0)
-				throw new InsufficientFundsException(newBalance);
-
-			Balance = newBalance;
-		}
-
-		public override string ToString() => $"Balance -> {Balance} Currency -> {Currency} IsBlocked -> {IsBlocked}";
-
-        public void AddFunds(decimal amount)
+        public Wallet(int playerId, Currency.Currency currency, decimal balance, bool isBlocked = false)
         {
-            throw new NotImplementedException();
+            PlayerId = playerId;
+            if (balance < 0)
+                throw new InsufficientFundsException(balance);
+
+            Balance = balance;
+            Currency = currency;
+            IsBlocked = isBlocked;
         }
 
-        public void SubstractFunds(decimal amount)
+        public void Block() => IsBlocked = true;
+
+        public void Unblock() => IsBlocked = false;
+
+        public void SetBalance(decimal balance)
         {
-            throw new NotImplementedException();
+            if (balance < 0)
+                throw new InsufficientFundsException(balance);
+
+            Balance = balance;
         }
 
-        public void ForceSubstractFunds(decimal amount)
+        public void Deposit(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount <= 0)
+                throw new InvalidAmountException(amount);
+
+            if (IsBlocked)
+                throw new WalletBlockedException(Currency);
+
+            Balance += amount;
         }
-        public void ForceDeposit(decimal amount)
+
+        public void Withdraw(decimal amount)
         {
-            throw new NotImplementedException();
+            if (amount <= 0)
+                throw new InvalidAmountException(amount);
+
+            if (IsBlocked)
+                throw new WalletBlockedException(Currency);
+
+            var newBalance = Balance - amount;
+            if (newBalance < 0)
+                throw new InsufficientFundsException(newBalance);
+
+            Balance = newBalance;
         }
+
+        public void ForceSubtract(decimal amount)
+        {
+            if (amount <= 0)
+                throw new InvalidAmountException(amount);
+
+            Balance -= amount;
+
+            //var newBalance = Balance - amount;
+            //if (newBalance < 0)
+            //	throw new InsufficientFundsException(newBalance);
+            //Balance = newBalance;
+        }
+
+
+
+        public override string ToString() => $"Balance -> {Balance} Currency -> {Currency} IsBlocked -> {IsBlocked}";
     }
 }

@@ -1,17 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WorldRank.Application.interfaces;
-using WorldRank.Infrastructure.repos;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace WorldRank.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddWorldRankInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
-            services.AddSingleton<IWalletRepository, InMemoryWalletRepository>();
 
-            return services;
         }
     }
 }

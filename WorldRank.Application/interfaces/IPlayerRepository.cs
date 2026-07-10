@@ -1,17 +1,22 @@
-﻿using WorldRank.Domain.Entities;
+﻿using WorldRank.Domain.Currency;
+using WorldRank.Domain.Wallets;
 
-namespace WorldRank.Application.interfaces
+namespace WorldRank.Application.Interfaces
 {
-	public interface IPlayerRepository
-	{
-		void AddPlayer(Player player);
+    public interface IWalletRepository
+    {
+        void Add(Wallet wallet);
 
-		IEnumerable<Player> GetAllPlayers();
+        List<Wallet> GetAllWalletsByPlayerId(int playerId);
 
-		void DeletePlayer(int playerId);
+        void UpdateBalance(int playerId, Currency currency, decimal newBalance);
 
-		Player? FindPlayer(int playerId);
+        void Deposit(int playerId, Currency currency, decimal amount);
 
-		IEnumerable<IGrouping<int, Player>> GroupPlayersByScore();
-	}
+        void Withdraw(int playerId, Currency currency, decimal amount);
+
+        void Block(int playerId, Currency currency);
+
+        void Unblock(int playerId, Currency currency);
+    }
 }

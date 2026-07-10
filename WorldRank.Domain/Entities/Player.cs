@@ -1,28 +1,30 @@
-namespace WorldRank.Domain.Entities;
+using WorldRank.Domain.Entities;
+
+namespace WorldRank.Console;
 
 public class Player : IPlayer
 {
-	public int Id { get; }
-	public string Name { get; private set; }
-	public int Score { get; private set; }
+    public int Id { get; }
+    public string Name { get; private set; }
+    public int Score { get; private set; }
 
-	public Player(int id, string name)
-	{
-		if (string.IsNullOrWhiteSpace(name))
-			throw new ArgumentException("Name cannot be empty.", nameof(name));
+    public Player(int id, string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name cannot be empty.", nameof(name));
 
-		Id = id;
-		Name = name;
-		Score = 0;
-	}
+        Id = id;
+        Name = name;
+        Score = 0;
+    }
 
-	public void AddScore(int points)
-	{
-		if (points < 0)
-			throw new ArgumentOutOfRangeException(nameof(points), "Points cannot be negative.");
+    public void AddScore(int points)
+    {
+        if (points < 0)
+            throw new ArgumentOutOfRangeException(nameof(points), "Points cannot be negative.");
 
-		Score += points;
-	}
+        Score += points;
+    }
 
-	public override string ToString() => $"[{Id}] {Name} - Score: {Score}";
+    public override string ToString() => $"[{Id}] {Name} - Score: {Score}";
 }
