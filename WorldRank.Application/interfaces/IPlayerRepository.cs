@@ -3,20 +3,16 @@ using WorldRank.Domain.Wallets;
 
 namespace WorldRank.Application.Interfaces
 {
-    public interface IWalletRepository
+    public interface IPlayerRepository
     {
-        void Add(Wallet wallet);
+        void AddPlayer(Player player);
 
-        List<Wallet> GetAllWalletsByPlayerId(int playerId);
+        IEnumerable<Player> GetAllPlayers();
 
-        void UpdateBalance(int playerId, Currency currency, decimal newBalance);
+        void DeletePlayer(int playerId);
 
-        void Deposit(int playerId, Currency currency, decimal amount);
+        Player? FindPlayer(int playerId);
 
-        void Withdraw(int playerId, Currency currency, decimal amount);
-
-        void Block(int playerId, Currency currency);
-
-        void Unblock(int playerId, Currency currency);
+        IEnumerable<IGrouping<int, Player>> GroupPlayersByScore();
     }
 }

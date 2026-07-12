@@ -1,12 +1,22 @@
-using WorldRank.Domain.Entities;
-
-namespace WorldRank.Console;
+namespace WorldRank.src.WorldRank.Domain.Entities;
 
 public class Player : IPlayer
 {
-    public int Id { get; }
+    public int Id { get; private set; }
     public string Name { get; private set; }
     public int Score { get; private set; }
+
+    public Player(string name)
+    {
+        Name = name;
+    }
+
+    public Player(int id, string name, int score)
+    {
+        Id = id;
+        Name = name;
+        Score = score;
+    }
 
     public Player(int id, string name)
     {
@@ -25,6 +35,5 @@ public class Player : IPlayer
 
         Score += points;
     }
-
     public override string ToString() => $"[{Id}] {Name} - Score: {Score}";
 }

@@ -1,15 +1,25 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WorldRank.Infrastructure.Contexts;
+using WorldRank.Infrastructure.Repositories;
+using WorldRank.Application.Interfaces;
+namespace WorldRank.Infrastructure;
 
-namespace WorldRank.Infrastructure
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
     {
-        public static IServiceCollection AddWorldRankInfrastructure(this IServiceCollection services)
-        {
+        // In-memory repositories hold state, so they must live for the whole app (Singleton).
+        //services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
+        //services.AddSingleton<IWalletRepository, InMemoryWalletRepository>();
 
-        }
+
+        services.AddDbContext<WorldRankDbContext>(options =>
+            options.UseSqlServer(connectionString)); // sql server 
+
+        services.AddScoped<IPlayerRepository, DBPlayerRepository>();
+        services.AddScoped<IWalletRepository, DBWalletRepository>();
+
+        return services;
     }
 }

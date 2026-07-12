@@ -1,38 +1,38 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
-using WorldRank.Application.Strategies;
-using WorldRank.Application.interfaces;
-using WorldRank.Application.Services;
+﻿using Microsoft.EntityFrameworkCore;
+WorldRank.Domain.Entities;
 
-namespace WorldRank.Application
+namespace WorldRank.Infrastructure.Contexts
 {
-    public static class DependencyInjection
+    public class WorldRankDbContext : DbContext
     {
-        public static IServiceCollection AddWorldRank(this IServiceCollection services)
+        public DbSet<Player> Players { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+
+        public WorldRankDbContext(DbContextOptions<WorldRankDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            services.AddLogging(builder =>
+            modelBuilder.Entity<Player>(entity =>
             {
-                builder.ClearProviders();
-                builder.AddNLog();
-                builder.SetMinimumLevel(LogLevel.Trace);
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id).ValueGeneratedOnAdd();
+                entity.Property(p => p.Name).IsRequired().HasMaxLength(200);
+                entity.Property(p => p.Score);
             });
 
-            services.AddApplication();
-            services.AddInfrastructure();
+            modelBuilder.Entity<Wallet>(entity =>
+            {
+                entity.HasKey(w => w.Id);
+                entity.Property(w => w.Id).ValueGeneratedOnAdd();
+                entity.Property(w => w.PlayerId).IsRequired();
+                entity.Property(w => w.Currency).HasConversion<string>();
+                entity.Property(w => w.Balance).HasColumnType("decimal(18,2)");
+                entity.Property(w => w.IsBlocked);
 
-            return services;
-        }
+                entity.HasIndex(w => new { w.PlayerId, w.Currency }).IsUnique();
+            });
 
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddSingleton<IFoundsStrategy, AddFundsStrategy>();
-            services.AddSingleton<IFoundsStrategy, SubtractFundsStrategy>();
-            services.AddSingleton<IFoundsStrategy, ForceSubtractFundsStrategy>();
-
-            services.AddSingleton<WalletService>();
-
-            return services;
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
