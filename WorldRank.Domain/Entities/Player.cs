@@ -1,4 +1,4 @@
-namespace WorldRank.src.WorldRank.Domain.Entities;
+namespace WorldRank.Domain.Entities;
 
 public class Player : IPlayer
 {

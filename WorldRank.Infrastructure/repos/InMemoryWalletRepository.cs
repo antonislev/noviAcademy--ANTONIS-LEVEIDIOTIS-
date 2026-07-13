@@ -2,7 +2,7 @@ using NLog;
 using WorldRank.Domain.Exceptions;
 using WorldRank.Domain.Entities;
 using WorldRank.Domain.Enums;
-using WorldRank.Application.interfaces;
+using WorldRank.Application.Interfaces;
 
 namespace WorldRank.Infrastructure.repos
 {
@@ -73,5 +73,15 @@ namespace WorldRank.Infrastructure.repos
 
 			return wallet;
 		}
-	}
+
+        public Wallet[] GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        Wallet IWalletRepository.GetWallet(int playerId, Currency currency)
+        {
+            return GetWallet(playerId, currency);
+        }
+    }
 }

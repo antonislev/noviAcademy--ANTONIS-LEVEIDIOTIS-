@@ -4,7 +4,6 @@ using System.Text;
 using WorldRank.Domain.Entities;
 using WorldRank.Domain.Exceptions;
 using WorldRank.Domain.Enums;
-using WorldRank.Application.interfaces;
 
 namespace WorldRank.Application.Strategies
 {

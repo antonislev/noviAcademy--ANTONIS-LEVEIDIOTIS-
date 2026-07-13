@@ -1,5 +1,5 @@
-﻿using WorldRank.Domain.Currency;
-using WorldRank.Domain.Wallets;
+﻿using WorldRank.Domain.Entities;
+using WorldRank.Domain.Enums;
 
 namespace WorldRank.Application.Interfaces
 {

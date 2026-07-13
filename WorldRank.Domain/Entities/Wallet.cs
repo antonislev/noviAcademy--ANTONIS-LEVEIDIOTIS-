@@ -1,7 +1,7 @@
-using WorldRank.src.WorldRank.Domain.Enums;
-using WorldRank.src.WorldRank.Domain.Exceptions;
+using WorldRank.Domain.Enums;
+using WorldRank.Domain.Exceptions;
 
-namespace WorldRank.src.WorldRank.Domain.Entities;
+namespace WorldRank.Domain.Entities;
 
 public class Wallet : IWallet
 {
@@ -76,4 +76,24 @@ public class Wallet : IWallet
     }
 
     public override string ToString() => $"Balance -> {Balance} Currency -> {Currency} IsBlocked -> {IsBlocked}";
+
+    public void AddFunds(decimal amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SubstractFunds(decimal amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ForceSubstractFunds(decimal amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ForceDeposit(decimal amount)
+    {
+        throw new NotImplementedException();
+    }
 }

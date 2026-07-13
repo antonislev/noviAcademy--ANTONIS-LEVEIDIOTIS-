@@ -4,7 +4,7 @@ using NLog.Extensions.Logging;
 using WorldRank.Infrastructure;
 using WorldRank.Application;
 
-namespace WorldRank.Console;
+namespace WorldRank.ConsoleApp;
 
 public static class DependencyInjection
 {

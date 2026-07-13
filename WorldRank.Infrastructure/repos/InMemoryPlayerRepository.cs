@@ -1,5 +1,5 @@
 using NLog;
-using WorldRank.Application.interfaces;
+using WorldRank.Application.Interfaces;
 using WorldRank.Domain.Entities;
 
 

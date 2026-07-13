@@ -2,11 +2,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using WorldRank.Application.Services;
-using WorldRank.Console;
+using WorldRank.ConsoleApp;
 
 var logger = LogManager.GetCurrentClassLogger();
 
-var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
 var connectionString = configuration.GetConnectionString("WorldRankDb");
 
 // Composition root: register every layer's services, then build the container.
@@ -19,8 +23,6 @@ var playerService = provider.GetRequiredService<PlayerService>();
 var walletService = provider.GetRequiredService<WalletService>();
 
 logger.Info("Application started.");
-
-
 
 while (true)
 {
@@ -77,8 +79,9 @@ while (true)
     }
     catch (Exception ex)
     {
-        // Safety net: log any exception the specific handlers did not catch, and keep the app running.
         logger.Error(ex, "Unexpected error while handling a menu action");
         Console.WriteLine($"Unexpected error: {ex.Message}");
+        if (ex.InnerException != null)
+            Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
     }
 }

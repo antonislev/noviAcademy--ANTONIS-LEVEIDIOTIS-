@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WorldRank.Infrastructure.Contexts;
-using WorldRank.Infrastructure.Repositories;
 using WorldRank.Application.Interfaces;
+using WorldRank.Infrastructure.repos;
 namespace WorldRank.Infrastructure;
 
 public static class DependencyInjection

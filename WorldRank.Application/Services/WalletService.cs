@@ -1,22 +1,23 @@
 ﻿using Microsoft.Extensions.Logging;
 using WorldRank.Application.Interfaces;
 using WorldRank.Application.Strategies;
-using WorldRank.Domain.Entities;
 using WorldRank.Domain.Exceptions;
 using SysConsole = System.Console;
-namespace WorldRank.ApplSication.Services;
+using WorldRank.Domain.Entities;
+
+namespace WorldRank.Application.Services;
 
 public class WalletService
 {
     private readonly IWalletRepository _walletRepository;
     private readonly IPlayerRepository _playerRepository;
     private readonly ILogger<WalletService> _logger;
-    private readonly IReadOnlyDictionary<FundsOperation, IFundsStrategy> _fundsStrategies;
+    private readonly IReadOnlyDictionary<FundsOperation, IFoundsStrategy> _fundsStrategies;
 
     public WalletService(
         IWalletRepository walletRepository,
         IPlayerRepository playerRepository,
-        IEnumerable<IFundsStrategy> strategies,
+        IEnumerable<IFoundsStrategy> strategies,
         ILogger<WalletService> logger)
     {
         _walletRepository = walletRepository;
@@ -45,6 +46,7 @@ public class WalletService
         {
             if (_playerRepository.FindPlayer(playerId.Value) is null)
                 throw new PlayerNotFoundException(playerId.Value);
+
 
             var wallet = new Wallet(GenerateWalletId(), playerId.Value, currency.Value, balance.Value);
             _walletRepository.Add(wallet);
