@@ -32,7 +32,7 @@ namespace WorldRank.Api.Controllers
             }
         }
 
-        [HttpGet("{playerId:guid}")]
+        [HttpGet("{playerId:int}")]
         public async Task<IActionResult> GetById(int playerId)
         {
             try
