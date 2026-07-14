@@ -22,4 +22,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Persistence\Commands\" />
+  </ItemGroup>
+
 </Project>

@@ -5,21 +5,23 @@ public class Player
 	public Guid Id { get; }
 	public string Name { get; }
 	public int Score { get; private set; }
+	private Player(Guid id ,string name, int score) 
+		{
+		Id = id;
+		Name = name;
+		Score = score;
+		}
 
-	public Player(string name)
+	public Player CreateNew(string name)
 	{
 		if (string.IsNullOrWhiteSpace(name))
 			throw new ArgumentException("Name cannot be null or empty.", nameof(name));
 
-		Id = Guid.NewGuid();
-		Name = name;
+		
+		return new Player(Guid.NewGuid(), name, 0);
 	}
-
-	// Parameterless ctor used only by EF Core to materialise rows (properties set via backing fields).
-	private Player()
-	{
-		Name = string.Empty;
-	}
+   
+   
 
 	public void UpdateScore(int newScore)
 	{
