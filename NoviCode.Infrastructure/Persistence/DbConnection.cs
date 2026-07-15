@@ -6,6 +6,5 @@ namespace NoviCode;
 // environment variable before using anything like this outside the lab.
 public static class DbConnection
 {
-	public const string ConnectionString =
-		"Server=localhost,1433;Database=NoviCode;User Id=sa;Password=Test123@;TrustServerCertificate=True";
+	public const string ConnectionString = "Server=LAPTOP-F1N4DF9A\\MSSQLSERVER02;Database=NoviCode;Trusted_Connection=True;TrustServerCertificate=True;";
 }

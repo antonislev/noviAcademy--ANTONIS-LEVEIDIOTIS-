@@ -1,9 +1,19 @@
 using System.Text.Json.Serialization;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 using NoviCode;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+	container.RegisterModule(new ApplicationModule());
+	container.RegisterModule(new InfrastructureModule());
+});
 
 // Logging via NLog (same nlog.config layout as the Console app).
 builder.Logging.ClearProviders();
@@ -24,7 +34,6 @@ builder.Services.AddSingleton<ICache, MemoryCacheStore>();
 
 // The services own the caching (read-through + write-through) and reach the DB via the repositories.
 builder.Services.AddScoped<IWalletService, WalletService>();
-builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 // Accept/emit enums (e.g. Currency) as their string names, not numbers.
 builder.Services.AddControllers()
@@ -34,6 +43,8 @@ builder.Services.AddControllers()
 // Swagger / OpenAPI — interactive API docs at /swagger.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 
