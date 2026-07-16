@@ -1,6 +1,10 @@
 <Solution>
-  <Project Path="NoviCode.Api/NoviCode.Api.csproj" />
+  <Project Path="NoviCode.Api/NoviCode.Api.csproj">
+    <BuildDependency Project="NoviCode.Domain/NoviCode.Domain.csproj" />
+    <BuildDependency Project="NoviCode.Gateway/NoviCode.Gateway.csproj" />
+  </Project>
   <Project Path="NoviCode.Application/NoviCode.Application.csproj" />
   <Project Path="NoviCode.Domain/NoviCode.Domain.csproj" />
+  <Project Path="NoviCode.Gateway/NoviCode.Gateway.csproj" Id="c4314052-bd69-4239-9e11-818b7e7ddba5" />
   <Project Path="NoviCode.Infrastructure/NoviCode.Infrastructure.csproj" />
 </Solution>
