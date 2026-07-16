@@ -1,9 +1,14 @@
-using System.Text.Json.Serialization;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NLog.Extensions.Logging;
 using NoviCode;
+using NoviCode.Behaviors;
+using NoviCode.Gateway;
+using NoviCode.Gateway.Jobs;
+using NoviCode.Queries.Players;
+using Quartz;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +16,35 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 {
-	container.RegisterModule(new ApplicationModule());
-	container.RegisterModule(new InfrastructureModule());
+    container.RegisterModule(new ApplicationModule());
+    container.RegisterModule(new InfrastructureModule());
 });
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(GetPlayerByIdQuery).Assembly);
+
+    cfg.AddOpenBehavior(typeof(CachingBehavior<,>));   // εξωτερικό στρώμα
+    cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));   // εσωτερικό στρώμα
+});
+
+builder.Services.AddQuartz(q =>
+{
+    var jobkey = new JobKey("fetch-ecb-rates");
+    q.AddJob<FetchEcbRatesJob>(opt => opt.WithIdentity(jobkey));
+    q.AddTrigger(opts => opts
+       .ForJob(jobkey)
+       .WithCronSchedule("0 2 * * ?"));
+});
+
+builder.Services.AddGateway();
 // Logging via NLog (same nlog.config layout as the Console app).
 builder.Logging.ClearProviders();
 builder.Logging.AddNLog("nlog.config");
 
 // One AppDbContext per request (scoped) — the EF Core repositories depend on it.
 builder.Services.AddDbContext<AppDbContext>(options =>
-	options.UseSqlServer(DbConnection.ConnectionString));
+    options.UseSqlServer(DbConnection.ConnectionString));
 
 builder.Services.AddScoped<IPlayerRepository, EfPlayerRepository>();
 builder.Services.AddScoped<IWalletRepository, EfWalletRepository>();
@@ -34,16 +57,18 @@ builder.Services.AddSingleton<ICache, MemoryCacheStore>();
 
 // The services own the caching (read-through + write-through) and reach the DB via the repositories.
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 // Accept/emit enums (e.g. Currency) as their string names, not numbers.
 builder.Services.AddControllers()
-	.AddJsonOptions(options =>
-		options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Swagger / OpenAPI — interactive API docs at /swagger.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddQuartzHostedService(opts => opts.WaitForJobsToComplete = true);
+builder.Services.AddGateway();
 
 
 var app = builder.Build();
@@ -51,9 +76,9 @@ var app = builder.Build();
 // Serve the Swagger JSON and UI in Development.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
-	app.MapGet("/", () => Results.Redirect("/swagger")); // root → Swagger UI
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.MapGet("/", () => Results.Redirect("/swagger")); // root → Swagger UI
 }
 
 app.MapControllers();
